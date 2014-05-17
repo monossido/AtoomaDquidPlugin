@@ -1,15 +1,17 @@
 package com.atooma.plugin.plugindquid;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.speech.tts.*;
+import android.content.Context;
 
 public class SpeechActivity extends Activity {
 
@@ -34,19 +36,25 @@ public class SpeechActivity extends Activity {
 		if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
 
 			ArrayList matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-
+			TextToSpeech tts = null;
+			tts.setLanguage(Locale.ITALY);
+			tts.speak("Benzina sotto il 20 per cento, vuoi essere guidato al distributore più vicino?", TextToSpeech.QUEUE_ADD, null);
+			// TODO
+			
 			for (Object match : matches) {
 				String stringMatch = (String) match;
-				LocationManager locationManager;
-				if (stringMatch.equalsIgnoreCase("si")){//start maps navigation TODO
-					String latitudine = getIntent().getExtras().getString("lat");
-					String longitudine = getIntent().getExtras().getString("lon");
-					locationManager = (LocationManager)this.getSystemService(LOCATION_SERVICE);
+				LocationManager locationManager = null;
+				if (stringMatch.equalsIgnoreCase("si")){
+					String latitudineArrivo = getIntent().getExtras().getString("lat");
+					String longitudineArrivo = getIntent().getExtras().getString("lon");
 					Location posizione = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+					String longitudinePartenza = Location.convert(posizione.getLongitude(), Location.FORMAT_DEGREES);
+					locationManager = (LocationManager)this.getSystemService(LOCATION_SERVICE);
+					
 					String url = "http://maps.google.com/maps?saddr=" +
-							posizione.getLatitude() + "," +
+							longitudinePartenza + "," +
 							posizione.getLongitude()+ "&daddr=" +
-							latitudine + "," + longitudine;
+							latitudineArrivo + "," + longitudineArrivo;
 					Intent navigatore = new Intent(Intent.ACTION_VIEW);
 					navigatore.setData(Uri.parse(url));
 					startActivity(navigatore);
