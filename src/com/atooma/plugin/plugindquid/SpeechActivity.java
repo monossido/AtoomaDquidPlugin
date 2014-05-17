@@ -79,6 +79,7 @@ public class SpeechActivity extends Activity implements OnInitListener, OnUttera
 							latitudineArrivo + "," + longitudineArrivo;
 					Intent navigatore = new Intent(Intent.ACTION_VIEW);
 					navigatore.setData(Uri.parse(url));
+					
 					startActivity(navigatore);
 				}
 			}
