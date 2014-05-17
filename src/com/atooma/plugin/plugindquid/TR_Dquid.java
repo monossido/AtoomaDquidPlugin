@@ -7,7 +7,6 @@ import java.util.HashMap;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.os.Looper;
 import android.util.Log;
 
 import com.atooma.plugin.ParameterBundle;
@@ -24,6 +23,7 @@ import com.dquid.driver.DQSourceType;
 public class TR_Dquid extends Trigger implements DQListenerInterface, DQDriverEventListener {
 
 	private String ruleId;
+	private boolean m_calledLooperAlready = false;
 
 	public TR_Dquid(Context context, String id, int version) {
 		super(context, id, version);
@@ -46,18 +46,28 @@ public class TR_Dquid extends Trigger implements DQListenerInterface, DQDriverEv
 		String device_id = (String) arg1.get("DQUID");
 
 		//TODO
-		device_id = "00:07:80:65:0A:AC";
+		device_id = "00:07:80:65:00:5C";
 
-		Looper.prepare();
+		if (!m_calledLooperAlready) {
+			try {
+				android.os.Looper.prepare();
+			} catch (RuntimeException e) {
+				e.printStackTrace();
+			}
+			m_calledLooperAlready = true;
+		}
 
 		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		BluetoothDevice deviceToConnect = mBluetoothAdapter.getRemoteDevice(device_id);
+
+		Log.v("Atooma dquid plugin", "deviceToConnect=" + deviceToConnect);
 
 		DQDriver.INSTANCE.setEventListener(this);
 		DQUnitManager.INSTANCE.addListener(this);
 
 		DQUnitManager.INSTANCE.startReceivingCarData();
 
+		Log.v("ATOOMA DQUID PLUGIN", "setBTDevice");
 		DQDriver.INSTANCE.setBtDevice(deviceToConnect);
 		DQDriver.INSTANCE.enableSource(DQSourceType.BLUETOOTH_2_1);
 	}
@@ -70,14 +80,13 @@ public class TR_Dquid extends Trigger implements DQListenerInterface, DQDriverEv
 
 	@Override
 	public void onDriverReady() {
-		// TODO Auto-generated method stub
+		DQUnitManager.INSTANCE.connect();
 
 	}
 
 	@Override
 	public void onConnectionSuccessful() {
-		// TODO Auto-generated method stub
-
+		Log.v("ATOOMA", "onConnectionSuccessful");
 	}
 
 	@Override
@@ -140,6 +149,7 @@ public class TR_Dquid extends Trigger implements DQListenerInterface, DQDriverEv
 		for (DQData data : values) {
 			//PRENDI DATI
 			if (data.getName().equals("FuelLevel")) {
+				Log.v("ATOOMA DQUID pLUGIN", "fuel level=" + data.getValue());
 				if (data.getValue() < 3)
 					trigger(ruleId, new ParameterBundle());
 			}
