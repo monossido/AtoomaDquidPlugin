@@ -32,6 +32,7 @@ public class SpeechActivity extends Activity implements OnInitListener, OnUttera
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+		
 		if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
 			dataFromActivity = data;
 			
@@ -47,12 +48,15 @@ public class SpeechActivity extends Activity implements OnInitListener, OnUttera
 	public void onInit(int status) {
 		tts.setLanguage(Locale.ITALY);
 		tts.speak("Benzina sotto il 20 per cento, vuoi essere guidato al distributore più vicino?", TextToSpeech.QUEUE_ADD, null);
-		tts.setOnUtteranceCompletedListener(this);
+		
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
 		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Select an application"); // user hint
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH); // setting recognition model, optimized for short phrases – search queries
 		intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1); // quantity of results we want to receive
+		
+		
+		tts.setOnUtteranceCompletedListener(this);
 	}
 	
 	public void onUtteranceCompleted(String utteranceId) {
