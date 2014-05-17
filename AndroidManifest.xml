@@ -1,4 +1,3 @@
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.atooma.plugin.plugindquid"
     android:versionCode="1"
@@ -8,8 +7,9 @@
         android:minSdkVersion="9"
         android:targetSdkVersion="17" />
 
-    <application
-        android:allowBackup="true">
+    <application android:allowBackup="true" >
+        <activity android:name="com.atooma.plugin.plugindquid.SpeechActivity" />
+
         <service
             android:name="com.atooma.AtoomaService"
             android:process=":remote" />
@@ -20,7 +20,9 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".PLUGINDQUIDRegister" android:process=":remote"/>
+        <service
+            android:name=".PLUGINDQUIDRegister"
+            android:process=":remote" />
     </application>
 
 </manifest>
