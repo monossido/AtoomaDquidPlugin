@@ -12,9 +12,11 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
+import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
+import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 
-public class SpeechActivity extends Activity implements OnInitListener {
+public class SpeechActivity extends Activity implements OnInitListener, OnUtteranceCompletedListener {
 
 	private int VOICE_RECOGNITION_REQUEST_CODE = 12345;
 	private TextToSpeech tts;
@@ -70,7 +72,12 @@ public class SpeechActivity extends Activity implements OnInitListener {
 	@Override
 	public void onInit(int status) {
 		tts.setLanguage(Locale.ITALY);
-		tts.speak("Benzina sotto il 20 per cento, vuoi essere guidato al distributore più vicino?", TextToSpeech.QUEUE_ADD, null);
+		tts.speak("Benzina sotto il 20 per cento, vuoi essere guidato al distributore più vicino?", TextToSpeech.QUEUE_ADD, null); 
+		tts.setOnUtteranceCompletedListener(this);
 	}
+	
+	public void onUtteranceCompleted(String utteranceId) {
+        //do something, e.g. update the GUI or something like that (beware of threading)
+    }
 
 }
