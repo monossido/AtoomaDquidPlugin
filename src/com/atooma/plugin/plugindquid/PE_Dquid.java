@@ -36,10 +36,12 @@ public class PE_Dquid extends Performer {
 					JSONObject jso = new JSONObject(response);
 
 					JSONArray jsa = jso.getJSONArray("stations");
-					String address = jsa.getJSONObject(0).getString("address");
+					String lat = jsa.getJSONObject(0).getString("lat");
+					String lon = jsa.getJSONObject(0).getString("lng");
 
 					Intent speechActivity = new Intent(getContext(), SpeechActivity.class);
-					speechActivity.putExtra("address", address);
+					speechActivity.putExtra("lat", lat);
+					speechActivity.putExtra("lon", lon);
 					getContext().startActivity(speechActivity);
 				} catch (JSONException e) {
 					e.printStackTrace();
