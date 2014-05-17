@@ -10,12 +10,8 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-<<<<<<< HEAD
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
-=======
-import android.speech.tts.*;
-import android.content.Context;
->>>>>>> a3abba2df873bdf7c3392af9934ee781668cb435
 
 public class SpeechActivity extends Activity {
 
@@ -44,21 +40,21 @@ public class SpeechActivity extends Activity {
 			tts.setLanguage(Locale.ITALY);
 			tts.speak("Benzina sotto il 20 per cento, vuoi essere guidato al distributore più vicino?", TextToSpeech.QUEUE_ADD, null);
 			// TODO
-			
+
 			for (Object match : matches) {
 				Log.v("DQUIDPLUGIN", "match=" + match);
 				String stringMatch = (String) match;
 				LocationManager locationManager = null;
-				if (stringMatch.equalsIgnoreCase("sì")){
+				if (stringMatch.equalsIgnoreCase("sì")) {
 					String latitudineArrivo = getIntent().getExtras().getString("lat");
 					String longitudineArrivo = getIntent().getExtras().getString("lon");
 					Location posizione = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 					String longitudinePartenza = Location.convert(posizione.getLongitude(), Location.FORMAT_DEGREES);
-					locationManager = (LocationManager)this.getSystemService(LOCATION_SERVICE);
-					
+					locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+
 					String url = "http://maps.google.com/maps?saddr=" +
 							longitudinePartenza + "," +
-							posizione.getLongitude()+ "&daddr=" +
+							posizione.getLongitude() + "&daddr=" +
 							latitudineArrivo + "," + longitudineArrivo;
 					Intent navigatore = new Intent(Intent.ACTION_VIEW);
 					navigatore.setData(Uri.parse(url));
