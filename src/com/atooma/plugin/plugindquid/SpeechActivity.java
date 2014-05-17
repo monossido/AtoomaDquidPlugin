@@ -22,13 +22,7 @@ public class SpeechActivity extends Activity implements OnInitListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-
-		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Select an application"); // user hint
-		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH); // setting recognition model, optimized for short phrases – search queries
-		intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1); // quantity of results we want to receive
-
-		startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+		tts = new TextToSpeech(this, this);
 
 	}
 
@@ -38,7 +32,6 @@ public class SpeechActivity extends Activity implements OnInitListener {
 		if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
 
 			ArrayList matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-			tts = new TextToSpeech(this, this);
 
 			// TODO
 
@@ -50,11 +43,16 @@ public class SpeechActivity extends Activity implements OnInitListener {
 					String latitudineArrivo = getIntent().getExtras().getString("lat");
 					String longitudineArrivo = getIntent().getExtras().getString("lon");
 					Location posizione = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-					String longitudinePartenza = Location.convert(posizione.getLongitude(), Location.FORMAT_DEGREES);
+
+					double latitudineDouble = Double.parseDouble(latitudineArrivo);
+					latitudineDouble += 0.1;
+
+					double longitudineDouble = Double.parseDouble(longitudineArrivo);
+					longitudineDouble += 0.1;
 
 					String url = "http://maps.google.com/maps?saddr=" +
-							longitudinePartenza + "," +
-							posizione.getLongitude() + "&daddr=" +
+							latitudineDouble + "," +
+							longitudineDouble + "&daddr=" +
 							latitudineArrivo + "," + longitudineArrivo;
 					Intent navigatore = new Intent(Intent.ACTION_VIEW);
 					navigatore.setData(Uri.parse(url));
@@ -71,6 +69,14 @@ public class SpeechActivity extends Activity implements OnInitListener {
 	public void onInit(int status) {
 		tts.setLanguage(Locale.ITALY);
 		tts.speak("Benzina sotto il 20 per cento, vuoi essere guidato al distributore più vicino?", TextToSpeech.QUEUE_ADD, null);
+
+		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Select an application"); // user hint
+		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH); // setting recognition model, optimized for short phrases – search queries
+		intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1); // quantity of results we want to receive
+
+		startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
 	}
 
 }
