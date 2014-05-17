@@ -22,23 +22,31 @@ import com.dquid.driver.DQSourceType;
 
 public class TR_Dquid extends Trigger implements DQListenerInterface, DQDriverEventListener {
 
+	private String ruleId;
+
 	public TR_Dquid(Context context, String id, int version) {
 		super(context, id, version);
 	}
 
 	@Override
 	public void declareParameters() {
-		addParameter(R.string.module_name, R.string.module_name, "DQUID", "STRING", true, "");
+		addParameter(R.string.module_name, R.string.module_name, "DQUID", "STRING", true, null);
 	}
 
 	@Override
 	public void defineUI() {
 		setIcon(R.drawable.plugin_icon_el_normal);
+		setTitle(R.string.module_name);
 	}
 
 	@Override
 	public void onInvoke(String arg0, ParameterBundle arg1) {
+		this.ruleId = arg0;
 		String device_id = (String) arg1.get("DQUID");
+
+		//TODO
+		device_id = "00:07:80:65:0A:AC";
+
 		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		BluetoothDevice deviceToConnect = mBluetoothAdapter.getRemoteDevice(device_id);
 
@@ -128,6 +136,10 @@ public class TR_Dquid extends Trigger implements DQListenerInterface, DQDriverEv
 		Collection<DQData> values = DQUnitManager.INSTANCE.getLastAvailable().values();
 		for (DQData data : values) {
 			//PRENDI DATI
+			if (data.getName().equals("FuelLevel")) {
+				if (data.getValue() < 3)
+					trigger(ruleId, new ParameterBundle());
+			}
 		}
 	}
 

@@ -1,11 +1,17 @@
 package com.atooma.plugin.plugindquid;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.RemoteException;
 
 import com.atooma.plugin.ParameterBundle;
 import com.atooma.plugin.Performer;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class PE_Dquid extends Performer {
 
@@ -21,8 +27,26 @@ public class PE_Dquid extends Performer {
 
 	@Override
 	public ParameterBundle onInvoke(String arg0, ParameterBundle arg1) throws RemoteException {
-		Intent speechActivity = new Intent(getContext(), SpeechActivity.class);
-		getContext().startActivity(speechActivity);
+
+		AsyncHttpClient client = new AsyncHttpClient();
+		client.get("http://api.mygasfeed.com/stations/radius/40.819009/-73.953284/1/reg/price/54ydojauxe.json", new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(String response) {
+				try {
+					JSONObject jso = new JSONObject(response);
+
+					JSONArray jsa = jso.getJSONArray("stations");
+					String address = jsa.getJSONObject(0).getString("address");
+
+					Intent speechActivity = new Intent(getContext(), SpeechActivity.class);
+					speechActivity.putExtra("address", address);
+					getContext().startActivity(speechActivity);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
 		return new ParameterBundle();
 	}
 
