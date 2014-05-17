@@ -3,13 +3,13 @@ package com.atooma.plugin.plugindquid;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.util.Log;
 
 public class SpeechActivity extends Activity {
 
@@ -36,23 +36,26 @@ public class SpeechActivity extends Activity {
 			ArrayList matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
 			for (Object match : matches) {
+				Log.v("DQUIDPLUGIN", "match=" + match);
 				String stringMatch = (String) match;
 				LocationManager locationManager;
-				if (stringMatch.equalsIgnoreCase("si")){//start maps navigation TODO
+				if (stringMatch.equalsIgnoreCase("sì")) {//start maps navigation TODO
+
+					Log.v("DQUIDPLUGIN", "equalsIgnoreCase si");
+
 					String latitudine = getIntent().getExtras().getString("lat");
 					String longitudine = getIntent().getExtras().getString("lon");
-					locationManager = (LocationManager)this.getSystemService(LOCATION_SERVICE);
+					locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 					Location posizione = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 					String url = "http://maps.google.com/maps?saddr=" +
 							posizione.getLatitude() + "," +
-							posizione.getLongitude()+ "&daddr=" +
+							posizione.getLongitude() + "&daddr=" +
 							latitudine + "," + longitudine;
 					Intent navigatore = new Intent(Intent.ACTION_VIEW);
 					navigatore.setData(Uri.parse(url));
 					startActivity(navigatore);
-					
 				}
-					
+
 			}
 		}
 
