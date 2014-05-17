@@ -16,6 +16,7 @@ public class PLUGINDQUID extends Module {
 	@Override
 	public void registerComponents() {
 		registerTrigger(new TR_Dquid(getContext(), "TR_DQUID", 1));
+		registerPerformer(new PE_Dquid(getContext(), "PE_DQUID", 1));
 	}
 
 	@Override
