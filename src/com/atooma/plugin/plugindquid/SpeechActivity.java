@@ -1,6 +1,7 @@
 package com.atooma.plugin.plugindquid;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 import android.app.Activity;
@@ -17,7 +18,6 @@ import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 
 public class SpeechActivity extends Activity implements OnInitListener, OnUtteranceCompletedListener {
-	private Intent dataFromActivity;
 	
 	private int VOICE_RECOGNITION_REQUEST_CODE = 12345;
 	private TextToSpeech tts;
@@ -31,37 +31,10 @@ public class SpeechActivity extends Activity implements OnInitListener, OnUttera
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+		
 		
 		if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
-			dataFromActivity = data;
-			
-			// TODO
-
-			
-		}
-
-		super.onActivityResult(requestCode, resultCode, data);
-	}
-
-	@Override
-	public void onInit(int status) {
-		tts.setLanguage(Locale.ITALY);
-		tts.speak("Benzina sotto il 20 per cento, vuoi essere guidato al distributore più vicino?", TextToSpeech.QUEUE_ADD, null);
-		
-		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-
-		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Select an application"); // user hint
-		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH); // setting recognition model, optimized for short phrases – search queries
-		intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1); // quantity of results we want to receive
-		
-		
-		tts.setOnUtteranceCompletedListener(this);
-	}
-	
-	public void onUtteranceCompleted(String utteranceId) {
-		if(dataFromActivity!=null){
-			ArrayList matches = dataFromActivity.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+			ArrayList matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 			for (Object match : matches) {
 				Log.v("DQUIDPLUGIN", "match=" + match);
 				String stringMatch = (String) match;
@@ -80,15 +53,42 @@ public class SpeechActivity extends Activity implements OnInitListener, OnUttera
 					String url = "http://maps.google.com/maps?saddr=" +
 							latitudineDouble + "," +
 							longitudineDouble + "&daddr=" +
+							
 							latitudineArrivo + "," + longitudineArrivo;
 					Intent navigatore = new Intent(Intent.ACTION_VIEW);
 					
 					navigatore.setData(Uri.parse(url));
 					
 					startActivity(navigatore);
-				}
-			}
+
+			
 		}
+			}}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	public void onInit(int status) {
+		tts.setLanguage(Locale.ITALY);
+		HashMap<String, String> params = new HashMap<String, String>();
+
+		params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,"stringId");
+		tts.speak("Benzina sotto il 20 per cento, vuoi essere guidato al distributore più vicino?", TextToSpeech.QUEUE_ADD, params);
+		
+		tts.setOnUtteranceCompletedListener(this);
+		
+	}
+	
+	public void onUtteranceCompleted(String utteranceId) {
+		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Select an application"); // user hint
+		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH); // setting recognition model, optimized for short phrases – search queries
+		intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1); // quantity of results we want to receive
+		Log.v("lancio","lancio");
+		startActivity(intent);
+	
+	
     }
 
 }

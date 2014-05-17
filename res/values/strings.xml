@@ -1,5 +1,7 @@
 
 <resources>
-    <string name="app_name">PlugindquidPlugin</string>
-    <string name="module_name">Plugindquid</string>
+    <string name="app_name">Driving Genius</string>
+    <string name="module_name">Driving Genius</string>
+    <string name="trigger_name">Livello benzina</string>
+    <string name="performer_name">Naviga verso benzinaio</string>
 </resources>

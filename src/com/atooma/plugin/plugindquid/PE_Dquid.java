@@ -19,9 +19,10 @@ public class PE_Dquid extends Performer {
 		super(context, id, version);
 	}
 
+	
 	@Override
 	public void defineUI() {
-		setTitle(R.string.app_name);
+		setTitle(R.string.performer_name);
 		setIcon(R.drawable.plugin_icon_el_normal);
 	}
 

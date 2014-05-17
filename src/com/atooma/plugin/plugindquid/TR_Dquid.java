@@ -31,7 +31,7 @@ public class TR_Dquid extends Trigger implements DQListenerInterface, DQDriverEv
 
 	@Override
 	public void declareParameters() {
-		addParameter(R.string.module_name, R.string.module_name, "DQUID", "STRING", true, null);
+		addParameter(R.string.trigger_name, R.string.trigger_name, "DQUID", "STRING", true, null);
 	}
 
 	@Override
