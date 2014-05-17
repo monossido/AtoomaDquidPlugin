@@ -42,6 +42,7 @@ public class PE_Dquid extends Performer {
 					Intent speechActivity = new Intent(getContext(), SpeechActivity.class);
 					speechActivity.putExtra("lat", lat);
 					speechActivity.putExtra("lon", lon);
+					speechActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					getContext().startActivity(speechActivity);
 				} catch (JSONException e) {
 					e.printStackTrace();

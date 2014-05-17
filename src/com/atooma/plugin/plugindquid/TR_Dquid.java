@@ -70,6 +70,9 @@ public class TR_Dquid extends Trigger implements DQListenerInterface, DQDriverEv
 		Log.v("ATOOMA DQUID PLUGIN", "setBTDevice");
 		DQDriver.INSTANCE.setBtDevice(deviceToConnect);
 		DQDriver.INSTANCE.enableSource(DQSourceType.BLUETOOTH_2_1);
+
+		DQUnitManager.INSTANCE.connect();
+
 	}
 
 	@Override
@@ -150,8 +153,10 @@ public class TR_Dquid extends Trigger implements DQListenerInterface, DQDriverEv
 			//PRENDI DATI
 			if (data.getName().equals("FuelLevel")) {
 				Log.v("ATOOMA DQUID pLUGIN", "fuel level=" + data.getValue());
-				if (data.getValue() < 3)
+				if (data.getValue() < 12) {
 					trigger(ruleId, new ParameterBundle());
+					DQUnitManager.INSTANCE.disconnect();
+				}
 			}
 		}
 	}
