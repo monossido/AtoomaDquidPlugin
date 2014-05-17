@@ -7,6 +7,7 @@ import java.util.HashMap;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.os.Looper;
 import android.util.Log;
 
 import com.atooma.plugin.ParameterBundle;
@@ -46,6 +47,8 @@ public class TR_Dquid extends Trigger implements DQListenerInterface, DQDriverEv
 
 		//TODO
 		device_id = "00:07:80:65:0A:AC";
+
+		Looper.prepare();
 
 		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		BluetoothDevice deviceToConnect = mBluetoothAdapter.getRemoteDevice(device_id);
