@@ -25,7 +25,7 @@ public class SpeechActivity extends Activity implements OnInitListener, OnUttera
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+		tts = new TextToSpeech(this, this);
 
 	}
 
@@ -34,7 +34,7 @@ public class SpeechActivity extends Activity implements OnInitListener, OnUttera
 
 		if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
 			dataFromActivity = data;
-			tts = new TextToSpeech(this, this);
+			
 			// TODO
 
 			
@@ -47,7 +47,7 @@ public class SpeechActivity extends Activity implements OnInitListener, OnUttera
 	public void onInit(int status) {
 		tts.setLanguage(Locale.ITALY);
 		tts.speak("Benzina sotto il 20 per cento, vuoi essere guidato al distributore più vicino?", TextToSpeech.QUEUE_ADD, null);
-
+		tts.setOnUtteranceCompletedListener(this);
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
 		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Select an application"); // user hint
@@ -78,6 +78,7 @@ public class SpeechActivity extends Activity implements OnInitListener, OnUttera
 							longitudineDouble + "&daddr=" +
 							latitudineArrivo + "," + longitudineArrivo;
 					Intent navigatore = new Intent(Intent.ACTION_VIEW);
+					
 					navigatore.setData(Uri.parse(url));
 					
 					startActivity(navigatore);
