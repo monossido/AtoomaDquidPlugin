@@ -11,11 +11,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
 
-public class SpeechActivity extends Activity {
+public class SpeechActivity extends Activity implements OnInitListener {
 
 	private int VOICE_RECOGNITION_REQUEST_CODE = 12345;
+	private TextToSpeech tts;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,21 +38,19 @@ public class SpeechActivity extends Activity {
 		if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
 
 			ArrayList matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-			TextToSpeech tts = null;
-			tts.setLanguage(Locale.ITALY);
-			tts.speak("Benzina sotto il 20 per cento, vuoi essere guidato al distributore più vicino?", TextToSpeech.QUEUE_ADD, null);
+			tts = new TextToSpeech(this, this);
+
 			// TODO
 
 			for (Object match : matches) {
 				Log.v("DQUIDPLUGIN", "match=" + match);
 				String stringMatch = (String) match;
-				LocationManager locationManager = null;
+				LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 				if (stringMatch.equalsIgnoreCase("sì")) {
 					String latitudineArrivo = getIntent().getExtras().getString("lat");
 					String longitudineArrivo = getIntent().getExtras().getString("lon");
 					Location posizione = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 					String longitudinePartenza = Location.convert(posizione.getLongitude(), Location.FORMAT_DEGREES);
-					locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 
 					String url = "http://maps.google.com/maps?saddr=" +
 							longitudinePartenza + "," +
@@ -65,6 +65,12 @@ public class SpeechActivity extends Activity {
 		}
 
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	public void onInit(int status) {
+		tts.setLanguage(Locale.ITALY);
+		tts.speak("Benzina sotto il 20 per cento, vuoi essere guidato al distributore più vicino?", TextToSpeech.QUEUE_ADD, null);
 	}
 
 }
